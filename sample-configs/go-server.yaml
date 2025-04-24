@@ -5,4 +5,7 @@ trigger:
 action:
   what: serve
   workdir: /Users/sneo/dev/code/backend/biblioteka/
-  exec: go run main.go
+  exec: bash
+  args:
+    - -c
+    - for i in {1..100}; do echo line $i; sleep 1; done
