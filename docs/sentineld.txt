@@ -1,0 +1,16 @@
+# First working MVP
+1. When run, the binary runs in an infinite loop, but also listens on a unix socket in /tmp/sentinel.sock
+2. It can accept the following commands (for now):
+3. start config.yaml -> returns a name
+4. stop name -> returns if successfully stopped
+
+## Start
+1. Start a command with the given command
+2. Start watching the selected directories for changes
+3. Attach a handler to that watcher which can restart the server
+4. Also assign a good name for that service and return that name; once that service is running successfully
+
+## Stop
+1. Take the name
+2. Look up the corresponding PID and kill it
+
