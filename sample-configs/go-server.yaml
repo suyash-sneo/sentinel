@@ -9,3 +9,7 @@ action:
   args:
     - -c
     - for i in {1..100}; do echo line $i; sleep 1; done
+output: 
+  mode: file
+  path: /Users/sneo/output.txt
+

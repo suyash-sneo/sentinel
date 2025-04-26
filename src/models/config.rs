@@ -17,7 +17,15 @@ pub struct Action {
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
+pub struct Output {
+    pub mode: String,
+    pub path: String,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
 pub struct Config {
     pub trigger: Trigger,
     pub action: Action,
+    pub output: Output,
 }
