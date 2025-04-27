@@ -16,6 +16,7 @@ use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod models;
+mod utils;
 
 static CHILDREN: Lazy<Mutex<HashMap<String, models::procs::ChildProc>>> = Lazy::new(|| {
     Mutex::new(HashMap::new())
@@ -63,10 +64,11 @@ fn stop_child(name: &str) -> String {
         }
     }
 
+    utils::proc_names::release_name(String::from(name));
     String::from("stop handled")
 }
 
-fn start_serve(config: models::config::Config) {
+fn start_serve(config: models::config::Config) -> String {
     
     let arg1 = &config.action.args[0];
     let arg2 = &config.action.args[1];
@@ -85,10 +87,11 @@ fn start_serve(config: models::config::Config) {
     let child_arc = Arc::new(Mutex::new(Some(child)));
 
     let signal_child = Arc::clone(&child_arc);
+    let proc_name = utils::proc_names::draw_name();
     // let stdout_arc = Arc::clone(&child_arc);
 
     let child_proc = models::procs::ChildProc {
-        name: String::from("machiavelli"),
+        name: proc_name.clone(),
         pid: child_pid,
         arc: child_arc,
         signal_arc: signal_child,
@@ -107,7 +110,9 @@ fn start_serve(config: models::config::Config) {
 
     // Insert into the global map for tracking
     let mut children_map = CHILDREN.lock().unwrap();
-    children_map.insert(String::from("machiavelli"), child_proc);
+    children_map.insert(proc_name.clone(), child_proc);
+
+    String::from(proc_name)
 }
 
 fn handle_serve(arg1: &str) -> String {
@@ -115,9 +120,7 @@ fn handle_serve(arg1: &str) -> String {
     let config_path = format!("/Users/sneo/dev/code/backend/sentinel/sample-configs/{}", arg1);
     let config = parse_config(config_path);
 
-    start_serve(config);
-
-    String::from("start handled")
+    start_serve(config)
 }
 
 fn handle_cmd(cmd : &str, arg1: &str) -> String {
